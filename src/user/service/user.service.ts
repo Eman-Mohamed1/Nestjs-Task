@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../models/user.entity';
+import { UserFollowingEntity } from '../models/followings.entity';
 import { Repository, Like } from 'typeorm';
 import { User } from '../models/user.interface';
  import { Observable, from, throwError } from 'rxjs';
@@ -8,11 +9,13 @@ import { User } from '../models/user.interface';
  import { AuthService } from 'src/auth/service/auth.service';
 import {paginate, Pagination, IPaginationOptions} from 'nestjs-typeorm-paginate';
 
+
 @Injectable()
 export class UserService {
 
     constructor(
         @InjectRepository(UserEntity) private readonly userRepository: Repository<UserEntity>,
+        @InjectRepository(UserFollowingEntity) private readonly userFollowRepo: Repository<UserFollowingEntity>,
         private authService: AuthService
     ) {}
 
@@ -119,4 +122,20 @@ export class UserService {
     findByMail(email: string): Observable<User> {
         return from(this.userRepository.findOne({email}));
     }
- }
+    public async createUserFollowRelation(
+        follower: UserEntity,
+        followeeId: number,
+      ) {
+        const followee = await this.findOne(followeeId);
+        if (!followee) {
+          return "user not found"
+        }
+    //    const newFollow = await this.userFollowRepo.save({
+    // //       follower,
+    // //       followee,
+    // //     });
+    // //     return newFollow.followee;
+    // //   }
+                        }
+                     }
+                    

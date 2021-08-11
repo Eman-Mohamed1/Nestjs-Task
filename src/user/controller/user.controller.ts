@@ -4,6 +4,8 @@ import { User } from '../models/user.interface';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { Pagination } from 'nestjs-typeorm-paginate';
+import { UserEntity } from "../models/user.entity";
+import { Userdec } from 'src/auth/User.decorator';
 
 
 
@@ -50,4 +52,27 @@ export class UserController {
         return this.userService.paginate({ page: Number(page), limit: Number(limit), route: 'http://localhost:3000/users' });
         
                                          }
+
+    @Put('/:userid/follow')
+            async followUser(
+                @ Userdec() follower: UserEntity,
+                @ Param('userid') followeeId: string,
+            ): Promise<UserEntity> {
+                const followedUser = await this.userService.createUserFollowRelation(
+                follower,
+                followeeId,
+                );
+                return followedUser;
+            }
+
+
+            @Get('/:userid/followers')
+            async getFollowersOfUser(): Promise<UserEntity[]> {
+              return [];
+            }
+
+            @Put('/:userid/followees')
+                async getFolloweesOfUser(): Promise<UserEntity[]> {
+                    return [];
+                }
 }
